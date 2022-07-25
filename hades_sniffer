@@ -1,0 +1,42 @@
+"""####### HaDeS SnIfDeR  #######
+    - Moiz Lakdawala 
+    - Ethan Berg 
+"""
+
+import json
+import requests
+
+
+def vt_ipscanning(ip):
+    """Function to get a verdict from Virus Total"""
+    url = f"https://www.virustotal.com/api/v3/ip_addresses/{ip}"
+    headers = {
+        "Accept": "application/json",
+        "x-apikey": "401e74a0a76ff4a5c2462177bfe54d1fb71a86a97031a3a5b461eb9fe06fa9a5"
+    }
+
+    response = requests.get(url, headers=headers)
+    test = json.loads(response.text)
+    new_test= (test['data'])
+    new_test = new_test['attributes']
+    new_test = new_test['last_analysis_results']
+    malicious = 0
+    harmless = 0
+    malicious_verdicts = []
+    for key, value in new_test.items():
+        checking = value
+        if checking['category'] == 'malicious':
+            malicious = malicious + 1
+            malicious_verdicts.append(key)
+        else:
+            harmless = harmless + 1
+    print (f"\nthere are {harmless} harmless verdict and {malicious} Malicious verdict for this IP")
+    print (f"\nthe following Engins repoted this IP as malicious{malicious_verdicts}\n")
+
+def main():
+    "Main Function to Excute all the collective verdicts"
+    ip = input("What is the IP address you want to search: ")
+    vt_ipscanning(ip)
+
+if __name__ == '__main__':
+    main()
